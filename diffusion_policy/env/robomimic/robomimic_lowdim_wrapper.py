@@ -68,10 +68,15 @@ class RobomimicLowdimWrapper(gym.Env):
                 self.env.reset_to({'states': self.seed_state_map[seed]})
             else:
                 # robosuite's initializes all use numpy global random state
+                rand_state = np.random.get_state()
+
                 np.random.seed(seed=seed)
                 self.env.reset()
                 state = self.env.get_state()['states']
                 self.seed_state_map[seed] = state
+                
+                self.env.reset_to({'states': self.seed_state_map[seed]})
+                np.random.set_state(rand_state)
             self._seed = None
         else:
             # random reset
